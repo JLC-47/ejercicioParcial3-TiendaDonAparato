@@ -32,22 +32,22 @@ public class CompraDAO {
 		return resultado;
 	}
 
-	public String registrarCompra(CompraDTO compra) throws SQLException {
+	public String registrarCompra(CompraDTO compra, String documentoCliente, int idProducto) throws SQLException {
 		String resultado = "";
 		if (!conectar().equals("conectado")) {
-			
 			return "error";
 		}
 
-		String consulta = "INSERT INTO compra (idCompra, detalleCompra, descuento, precioCompra, total) VALUES (?,?,?,?,?)";
+		String consulta = "INSERT INTO compra (detalleCompra, descuento, precioCompra, total, fechaCompra, documento, idProducto) VALUES (?,?,?,?,NOW(),?,?)";
 
 		try {
 			preStatement = connection.prepareStatement(consulta);
-			preStatement.setInt(1, compra.getIdCompra());
-			preStatement.setString(2, compra.getDetalleCompra());
-			preStatement.setDouble(3, compra.getDescuento());
-			preStatement.setDouble(4, compra.getPrecioCompra());
-			preStatement.setDouble(5, compra.getTotal());
+			preStatement.setString(1, compra.getDetalleCompra());
+			preStatement.setDouble(2, compra.getDescuento());
+			preStatement.setDouble(3, compra.getPrecioCompra());
+			preStatement.setDouble(4, compra.getTotal());
+			preStatement.setString(5, documentoCliente);
+			preStatement.setInt(6, idProducto);
 			preStatement.execute();
 			resultado = "ok";
 		} catch (SQLException e) {
@@ -61,10 +61,67 @@ public class CompraDAO {
 		return resultado;
 	}
 
+	public CompraDTO consultarCompra(int id) throws SQLException {
+		CompraDTO compra = null;
+		if (!conectar().equals("conectado")) {
+			return null;
+		}
+
+		ResultSet result = null;
+		String consulta = "SELECT * FROM compra WHERE idCompra = ?";
+
+		try {
+			preStatement = connection.prepareStatement(consulta);
+			preStatement.setInt(1, id);
+			result = preStatement.executeQuery();
+
+			if (result.next()) {
+				compra = new CompraDTO();
+				compra.setIdCompra(result.getInt("idCompra"));
+				compra.setDetalleCompra(result.getString("detalleCompra"));
+				compra.setDescuento(result.getDouble("descuento"));
+				compra.setPrecioCompra(result.getDouble("precioCompra"));
+				compra.setTotal(result.getDouble("total"));
+			}
+		} finally {
+			if (result != null) result.close();
+			preStatement.close();
+			connection.close();
+			conexion.desconectar();
+		}
+		return compra;
+	}
+
+	public String actualizarCompra(CompraDTO compra) throws SQLException {
+		String respuesta = "";
+		if (!conectar().equals("conectado")) {
+			return "error";
+		}
+
+		String consulta = "UPDATE compra SET detalleCompra=?, descuento=?, precioCompra=?, total=? WHERE idCompra=?";
+
+		try {
+			preStatement = connection.prepareStatement(consulta);
+			preStatement.setString(1, compra.getDetalleCompra());
+			preStatement.setDouble(2, compra.getDescuento());
+			preStatement.setDouble(3, compra.getPrecioCompra());
+			preStatement.setDouble(4, compra.getTotal());
+			preStatement.setInt(5, compra.getIdCompra());
+			preStatement.executeUpdate();
+			respuesta = "ok";
+		} catch (SQLException e) {
+			respuesta = "error";
+		} finally {
+			preStatement.close();
+			connection.close();
+			conexion.desconectar();
+		}
+		return respuesta;
+	}
+
 	public ArrayList<CompraDTO> consultarListaCompras() throws SQLException {
 		ArrayList<CompraDTO> listaCompras = new ArrayList<CompraDTO>();
 		if (!conectar().equals("conectado")) {
-			
 			return listaCompras;
 		}
 
@@ -97,7 +154,6 @@ public class CompraDAO {
 	public String eliminarCompra(int id) throws SQLException {
 		String respuesta = "";
 		if (!conectar().equals("conectado")) {
-			
 			return "error";
 		}
 

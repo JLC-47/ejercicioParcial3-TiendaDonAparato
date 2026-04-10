@@ -7,6 +7,10 @@ public class CompraDTO {
 	private double precioCompra;
 	private double total;
 	
+	public CompraDTO() {
+		
+	}
+	
 	
 	
 	public CompraDTO(int idCompra, String detalleCompra, double descuento, double precioCompra, double total) {

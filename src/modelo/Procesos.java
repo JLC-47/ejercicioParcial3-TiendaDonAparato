@@ -33,8 +33,9 @@ public class Procesos {
 	    } else if (cliente.getTipo().equalsIgnoreCase("C")) {
 	        porcentaje = 0.10; 
 	    } else {
-	        porcentaje = 0; 
-	    }
+	    	porcentaje = 0; 	
+		}
+	    
 
 	    double valorDescuento = precioBase * porcentaje;
 	    double totalReal = precioBase - valorDescuento;

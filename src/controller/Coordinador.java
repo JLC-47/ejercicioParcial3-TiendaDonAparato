@@ -16,6 +16,8 @@ import modelo.dao.ClienteDAO;
 import modelo.dao.CompraDAO;
 import modelo.dao.ProductoDAO;
 import modelo.dto.ClienteDTO;
+import modelo.dto.CompraDTO;
+import modelo.dto.ProductoDTO;
 
 public class Coordinador {
 	private VentanaPrincipal ventanaPrincipal;
@@ -104,16 +106,57 @@ public class Coordinador {
 	}
 	
 	
-	
-	public String registrarEnBD(ClienteDTO cliente)  {
-		try {
-			return miClienteDAO.registarCliente(cliente);
-		} catch (SQLException e) {
-			return "error";
-		}
+	public void mostrarVentanaPrincipal() {
+		ventanaPrincipal.setVisible(true);
+	}
+
+	public void mostrarRegistroCliente() {
+		registroCliente.setVisible(true);
+	}
+
+	public void mostrarRegistroProducto() {
+		registroProducto.setVisible(true);
+	}
+
+	public void mostrarConsultaCliente() {
+		ventanaCliente.setVisible(true);
+	}
+
+	public void mostrarConsultaProducto() {
+		ventanaProducto.setVisible(true);
+	}
+
+	public void mostrarCompraProducto() {
+		compraProducto.setVisible(true);
+	}
+
+	public void mostrarGestionCompra() {
+		gestionCompra.setVisible(true);
 	}
 	
 	
+	
+	public String registarCliente(ClienteDTO cliente) {
+	    try {
+	        if (miClienteDAO == null) {
+	            return "Error: DAO no inicializado";
+	        }
+	        return miClienteDAO.registarCliente(cliente);
+	    } catch (Exception e) {
+	        e.printStackTrace(); 
+	        return "error";
+	    }
+	}	
+	
+	
+	
+	public ClienteDTO consultarCliente(String doc) {
+	    try {
+	        return miClienteDAO.consultarCliente(doc);
+	    } catch (SQLException e) {
+	        return null;
+	    }
+	}
 	
 	public String actualizarCliente(ClienteDTO miCliente)  {
 		try {
@@ -123,6 +166,7 @@ public class Coordinador {
 			return "error"; 
 		}
 	}
+	
 	
 	
 	
@@ -146,6 +190,87 @@ public class Coordinador {
 			return new ArrayList<ClienteDTO>();
 		}
 	}
+
 	
+	public String registrarProducto(ProductoDTO producto) {
+	    try {
+	        if (miProductoDAO == null) {
+	            return "Error: DAO de producto no inicializado";
+	        }
+	        return miProductoDAO.registrarProducto(producto);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return "error";
+	    }
+	}
+	
+	
+	public ProductoDTO consultarProducto(int id) {
+		try {
+			return miProductoDAO.consultarProducto(id);
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+
+	
+	public String actualizarProducto(ProductoDTO producto) {
+		try {
+			return miProductoDAO.actualizarProducto(producto);
+		} catch (SQLException e) {
+			return "error";
+		}
+	}
+	
+	
+	public String eliminarProducto(int id) {
+		try {
+			return miProductoDAO.eliminarProducto(id);
+		} catch (SQLException e) {
+			return "error";
+		}
+	}
+	
+	
+	public ArrayList<ProductoDTO> getListaProductos() {
+		try {
+			return miProductoDAO.consultarListaProductos();
+		} catch (SQLException e) {
+			return new ArrayList<ProductoDTO>();
+		}
+	}
+	
+
+	public CompraDTO calcularDescuento(ClienteDTO cliente, ProductoDTO producto, int cantidad) {
+	    return misProcesos.calcularDescuento(cliente, producto, cantidad);
+	}
+	
+	
+	public String registrarCompra(CompraDTO compra, String documentoCliente, int idProducto) {
+	    try {
+	        return miCompraDAO.registrarCompra(compra, documentoCliente, idProducto);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return "error";
+	    }
+	}
+	
+	
+	public ArrayList<CompraDTO> consultarListaCompras() {
+	    try {
+	        return miCompraDAO.consultarListaCompras();
+	    } catch (SQLException e) {
+	        return new ArrayList<CompraDTO>();
+	    }
+	}
+	
+	
+	public String eliminarCompra(int id) {
+	    try {
+	        return miCompraDAO.eliminarCompra(id);
+	    } catch (SQLException e) {
+	        return "error";
+	    }
+	}
 	
 }

@@ -7,6 +7,10 @@ public class ProductoDTO {
 	private double precio;
 	private String descripcion;
 	
+	public ProductoDTO() {
+		
+	}
+	
 	
 	public ProductoDTO(int idProducto, String nombre, int cantidad, double precio, String descripcion) {
 		super();
